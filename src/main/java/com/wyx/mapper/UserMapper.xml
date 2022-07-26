@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wyx.mapper.UserMapper">
+    <!--定义全部列名
+       user_id
+       card_type
+       card_no
+       user_name
+       user_sex
+       user_age
+       user_role
+    -->
+    <sql id="allColumns">
+        user_id,card_type,card_no,user_name,user_sex,user_age,user_role
+    </sql>
+
+    <select id="selectUserPage" resultType="com.wyx.pojo.User">
+        select <include refid="allColumns"></include>
+        from user
+        <where>
+            <if test="userName != null and userName != ''">
+                and  user_name like concat('%',#{userName},'%')
+            </if>
+            <if test="userSex != null and userSex != ''">
+                and  user_sex = #{userSex}
+            </if>
+        </where>
+        limit #{startRow},5
+    </select>
+
+    <insert id="createUser" parameterType="com.wyx.pojo.User">
+        insert into user values(#{user_id},#{card_type},#{card_no},#{user_name},#{user_sex},#{user_age},#{user_role})
+    </insert>
+
+    <delete id="deleteUserById" parameterType="string">
+        delete from user where user_id = #{userId}
+    </delete>
+
+    <select id="getRowCount" resultType="int">
+        select count(*)
+        from user
+        <where>
+            <if test="userName != null and userName != ''">
+                and  user_name like concat('%',#{userName},'%')
+            </if>
+            <if test="userSex != null and userSex != ''">
+                and  user_sex = #{userSex}
+            </if>
+        </where>
+    </select>
+</mapper>
